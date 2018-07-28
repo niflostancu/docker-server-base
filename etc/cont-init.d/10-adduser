@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+
+[[ "$(id -g container)" != "$PGID" ]] && groupmod -o -g "$PGID" container
+[[ "$(id -u container)" != "$PUID" ]] && usermod -o -g "$PUID" container
+
+echo " * container user uid=$(id -u container), gid=$(id -g container)"
+
+chown container:container /app
+chown container:container /config
+chown container:container /defaults
+
