@@ -3,14 +3,14 @@ MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
 # package versions (prefixes) and arch
 ARG S6L_VERSION="v1."
-ARG CONFD_VERSION="v0.16."
+ARG ORBIT_VERSION="v3.2."
 ARG ARCH="amd64"
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
 	HOME="/root" TERM="xterm"
 
-ADD build_s6overlay.sh build_confd.sh /tmp/
+ADD build_s6overlay.sh build_goapps.sh /tmp/
 
 RUN \
 	echo "**** installing packages ****" && \
@@ -21,13 +21,13 @@ RUN \
 		go git gcc make musl-dev jq && \
 	echo "**** adding s6 overlay ****" && \
 	/tmp/build_s6overlay.sh "${S6L_VERSION}" && \
-	echo "**** building confd ****" && \
-	/tmp/build_confd.sh "${CONFD_VERSION}" && \
+	echo "**** building Orbit ****" && \
+	/tmp/build_goapps.sh "${ORBIT_VERSION}" && \
 	echo "**** creating user & folder structure ****" && \
 	groupmod -g 1000 users && \
 	useradd -u 911 -U -d /config -s /bin/false container && \
 	usermod -G users container && \
-	mkdir -p /app /config /defaults && \
+	mkdir -p /app /config && \
 	echo "**** cleanup ****" && \
 	apk del .build-dependencies && \
 	cat /tmp/VERSIONS 1>&2 && \
