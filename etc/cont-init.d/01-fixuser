@@ -1,0 +1,45 @@
+#!/usr/bin/execlineb -P
+with-contenv
+# Creates the container user & fixes the permissions
+
+importas -D 911 PUID PUID
+importas -D 911 PGID PGID
+
+backtick -D 0 -n ACTUAL_GID { id -g container }
+importas -u ACTUAL_GID ACTUAL_GID
+foreground {
+    if { test ${ACTUAL_GID} -ne ${PGID} }
+    groupmod -o -g "${PGID}" container
+}
+
+backtick -D 0 -n ACTUAL_UID { id -u container }
+importas -u ACTUAL_UID ACTUAL_UID
+foreground {
+    if { test ${ACTUAL_UID} -ne ${PUID} }
+    usermod -o -u "${PUID}" container
+}
+
+foreground {
+    echo " * container user uid=${PUID}, gid=${PGID}"
+}
+foreground { chown container:container -R /app }
+
+## fix-attrs.d: apply user-provided ownership & permission fixes
+if {
+    if -t { s6-test -d /etc/fix-attrs2.d/ }
+    if { s6-echo "[fix-attrs2.d] applying ownership & permissions fixes..." }
+    if {
+        pipeline { s6-ls -0 -- /etc/fix-attrs2.d }
+        pipeline { s6-sort -0 -- }
+        forstdin -0 -- i
+        importas -u i i
+        foreground { redirfd -r 0 /etc/fix-attrs2.d/${i} fix-attrs }
+        importas -u ? ?
+        if { s6-echo -- "[fix-attrs2.d] ${i}: exited ${?}." }
+        exit ${?}
+    }
+    if { s6-echo -- "[fix-attrs2.d] done." }
+}
+
+exit 0
+
