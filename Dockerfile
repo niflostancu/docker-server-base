@@ -35,6 +35,7 @@ RUN \
 
 # add local files
 COPY etc /etc
+COPY bin /bin
 
 ENTRYPOINT [ "/init" ]
 

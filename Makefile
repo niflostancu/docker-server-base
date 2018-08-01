@@ -19,7 +19,7 @@ push:
 run:
 	docker run -it --rm --name $(IMAGE_NAME)-testinst --hostname=$(IMAGE_NAME) \
 		-e "PUID=$$(id -u)" -e PGID=$$(id -g) \
-		$(FULL_IMAGE_NAME):latest bash
+		$(FULL_IMAGE_NAME):latest shell
 
 .PHONY: build build_no_cache push
 
