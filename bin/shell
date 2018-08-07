@@ -1,4 +1,4 @@
-#!/usr/bin/execlineb -P
+#!/usr/bin/execlineb -S0
 with-contenv
-bash
+bash $@
 

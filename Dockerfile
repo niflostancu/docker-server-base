@@ -8,7 +8,7 @@ ARG ARCH="amd64"
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
-	HOME="/root" TERM="xterm"
+	HOME="/root" TERM="xterm" SHELL="/bin/shell"
 
 ADD build_s6overlay.sh build_goapps.sh /tmp/
 
