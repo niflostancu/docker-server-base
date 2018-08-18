@@ -22,7 +22,6 @@ foreground {
 foreground {
     echo " * container user uid=${PUID}, gid=${PGID}"
 }
-foreground { chown container:container -R /app }
 
 ## fix-attrs.d: apply user-provided ownership & permission fixes
 if {

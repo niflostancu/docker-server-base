@@ -1,0 +1,24 @@
+#!/usr/bin/execlineb -S0
+# Blocks until all container services have been started
+
+importas -D 30000 -u WAIT_MAXTIME WAIT_MAXTIME
+s6-maximumtime -t ${WAIT_MAXTIME}
+
+# First, wait until the init scripts finish
+foreground {
+	loopwhilex -x 0
+    test -f /var/run/s6/.scripts-finished
+}
+
+# Then wait for each service to notify its up state
+pipeline { s6-ls -0 -- /var/run/s6/etc/services.d }
+forstdin -0 -o 0 -- i
+importas -u i i
+ifelse { s6-test -f /var/run/s6/services/${i}/notification-fd }
+{
+    foreground { echo s6-svwait -t ${WAIT_MAXTIME} -U /var/run/s6/services/${i} }
+    s6-svwait -t ${WAIT_MAXTIME} -U /var/run/s6/services/${i}
+}
+foreground { echo s6-svwait -t ${WAIT_MAXTIME} -u /var/run/s6/services/${i} }
+s6-svwait -t ${WAIT_MAXTIME} -u /var/run/s6/services/${i}
+

@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -S0
+# Creates a file to notify when initialization finished
+touch /var/run/s6/.scripts-finished
+
