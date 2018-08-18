@@ -19,7 +19,7 @@ cd /tmp/go/src/github.com/$ORBIT_REPO
 git checkout -q --detach "$ORBIT_RELEASE"
 
 # Build & install it
-GOPATH=/tmp/go/ CGO_ENABLED=0 go build --ldflags '-s -w'
+GOPATH=/tmp/go/ CGO_ENABLED=0 go build --ldflags '-X main.version='$ORBIT_RELEASE'-alpine -s -w'
 install -c orbit /usr/bin/orbit
 
 rm -rf $HOME/.cache
