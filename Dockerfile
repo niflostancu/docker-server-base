@@ -27,7 +27,7 @@ RUN \
 	groupmod -g 1000 users && \
 	useradd -u 911 -U -d /config -s /bin/false container && \
 	usermod -G users container && \
-	mkdir -p /app /config && \
+	mkdir -p /app /config /test && \
 	echo "**** cleanup ****" && \
 	apk del .build-dependencies && \
 	cat /tmp/VERSIONS 1>&2 && \
