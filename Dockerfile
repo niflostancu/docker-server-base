@@ -8,7 +8,8 @@ ARG ARCH="amd64"
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
-	HOME="/root" TERM="xterm" SHELL="/bin/shell"
+	HOME="/root" TERM="xterm" SHELL="/bin/shell" \
+	S6_BEHAVIOUR_IF_STAGE2_FAILS=2
 
 ADD build_s6overlay.sh build_goapps.sh /tmp/
 
@@ -16,7 +17,7 @@ RUN \
 	echo "**** installing packages ****" && \
 	apk --update upgrade && \
 	apk add --no-cache \
-		bash coreutils shadow tzdata curl ca-certificates tar && \
+		bash coreutils iproute2 shadow tzdata curl ca-certificates tar && \
 	apk add --no-cache --virtual .build-dependencies \
 		go git gcc make musl-dev jq && \
 	echo "**** adding s6 overlay ****" && \
