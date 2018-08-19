@@ -38,7 +38,7 @@ function _ecolor() {
 }
 function _debug() {
     if [[ "$DEBUG" -gt "0" ]]; then
-        echo -e "$@" >&2
+        echo -e "> $*" >&2
     fi
 }
 
@@ -91,13 +91,16 @@ function dtest_copy_goss() {
 # Starts the container; called by `init_test`
 function _start_container() {
     # start the container with TEST_TMP as test volume
+    _debug "docker run -d -v "$TEST_TMP:/test" "${DOCKER_ARGS[@]}" \
+        "$TEST_IMAGE" "${DOCKER_CMD[@]}""
     CONTAINER_ID=$(docker run -d -v "$TEST_TMP:/test" "${DOCKER_ARGS[@]}" \
         "$TEST_IMAGE" "${DOCKER_CMD[@]}")
+    _debug "container: $CONTAINER_ID"
 }
 
 # Execs a custom command within the container
 function dtest_exec() {
-    echo "\$" "$@"
+    echo "\$" "$@" >&2
     docker exec "$CONTAINER_ID" "$@"
 }
 
@@ -174,7 +177,9 @@ function run_tests() {
             _start_container
 
             "$TEST_NAME" | _indent
-            if [[ "${PIPESTATUS[0]}" -ne 0 ]]; then
+            TEST_EXIT_CODE=${PIPESTATUS[0]}
+            _debug "test exited $TEST_EXIT_CODE"
+            if [[ "$TEST_EXIT_CODE" -ne 0 ]]; then
                 exit 1
             fi
 
