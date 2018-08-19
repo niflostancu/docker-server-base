@@ -142,6 +142,8 @@ function cleanup_test() {
 function report_test_error() {
     _ecolor error "\n$TEST_NAME: failed with code $ret!"
     echo -e "${ERR_COLOR}Stack trace:${NO_COLOR}$_STACKTRACE" >&2
+    echo -e "\nDocker logs" >&2
+    docker logs "$CONTAINER_ID" | tail -20
     exit $ret
 }
 
