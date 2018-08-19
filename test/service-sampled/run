@@ -1,0 +1,5 @@
+#!/bin/execlineb -P
+# Sample service that sleeps all day ;)
+loopwhilex -o 0
+s6-sleep 86400
+

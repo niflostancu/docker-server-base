@@ -1,0 +1,14 @@
+file:
+  "/var/run/THIS_SHOULD_NOT_EXIST":
+    exists: false
+
+command:
+  "s6-svstat -o up -n /var/run/s6/services/sampled":
+    exit-status: 0
+    stdout:
+      - "/^true$/"
+  "s6-svstat -o up -n /var/run/s6/services/downd":
+    exit-status: 0
+    stdout:
+      - "/^false$/"
+
