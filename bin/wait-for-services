@@ -1,24 +1,38 @@
 #!/usr/bin/execlineb -S0
 # Blocks until all container services have been started
 
-importas -D 30000 -u WAIT_MAXTIME WAIT_MAXTIME
-s6-maximumtime -t ${WAIT_MAXTIME}
+importas -D 30000 -u S6_WAIT_INIT_MAX S6_WAIT_INIT_MAX
+importas -D 10000 -u S6_WAIT_SV_MAX S6_WAIT_SV_MAX
 
-# First, wait until the init scripts finish
-foreground {
-	loopwhilex -x 0
-    test -f /var/run/s6/.scripts-finished
+importas -D "/var/run/s6/.init-finished" S6_INIT_FINISHED_FILE S6_INIT_FINISHED_FILE
+importas -D "/var/run/s6/.init-wait" S6_INIT_FINISHED_EVENT S6_INIT_FINISHED_EVENT
+
+# First, check / wait for the stage2 init script to finish
+if {
+    # subscribe to the event, but use an extra file to avoid the chicken-egg
+    # problem
+    foreground { s6-mkfifodir "${S6_INIT_FINISHED_EVENT}" }
+
+    redirfd -w 1 /dev/null
+    s6-ftrig-listen1 -t "${S6_WAIT_INIT_MAX}" "${S6_INIT_FINISHED_EVENT}" x
+    # now, if the INIT_FINISHED file exists, do a self-notify to readily return
+    # from the event-waiting program
+    if -t { s6-test -f "${S6_INIT_FINISHED_FILE}" }
+    s6-ftrig-notify "${S6_INIT_FINISHED_EVENT}" x
 }
 
 # Then wait for each service to notify its up state
+if { s6-test -d /var/run/s6/etc/services.d }
 pipeline { s6-ls -0 -- /var/run/s6/etc/services.d }
 forstdin -0 -o 0 -- i
 importas -u i i
+
+# hack to ignore disabled services (especially our init-waitd)
+if -t { test ! -f "/var/run/s6/services/${i}/down" }
+
 ifelse { s6-test -f /var/run/s6/services/${i}/notification-fd }
 {
-    foreground { echo s6-svwait -t ${WAIT_MAXTIME} -U /var/run/s6/services/${i} }
-    s6-svwait -t ${WAIT_MAXTIME} -U /var/run/s6/services/${i}
+    s6-svwait -t ${S6_WAIT_SV_MAX} -U /var/run/s6/services/${i}
 }
-foreground { echo s6-svwait -t ${WAIT_MAXTIME} -u /var/run/s6/services/${i} }
-s6-svwait -t ${WAIT_MAXTIME} -u /var/run/s6/services/${i}
+s6-svwait -t ${S6_WAIT_SV_MAX} -u /var/run/s6/services/${i}
 
