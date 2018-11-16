@@ -25,6 +25,5 @@ test:
 	@echo "Testing $(FULL_IMAGE_NAME):latest"
 	@TEST_IMAGE="$(FULL_IMAGE_NAME):latest" ./test/run_tests.sh
 
-.PHONY: build build_no_cache push test
-
+.PHONY: build build_force push test
 

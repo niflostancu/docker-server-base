@@ -64,7 +64,7 @@ function save_stacktrace() {
 # Downloads / copies goss to the docker volume
 function dtest_copy_goss() {
     local goss_src="$GOSS_PATH"
-    local which_goss=$(which goss 2>/dev/null)
+    local which_goss=$(which goss 2>/dev/null || true)
     if [[ -z "$goss_src" ]] && [[ -x "$which_goss" ]]; then
         goss_src="$which_goss"
     elif [[ "$GOSS_URL" ]]; then
@@ -75,6 +75,7 @@ function dtest_copy_goss() {
         if [[ ! -f "$GOSS_CACHE" ]]; then
             _debug "downloading goss..."
             curl -L -o "$GOSS_CACHE" "$goss_src"
+            chmod +x "$GOSS_CACHE"
         fi
         goss_src="$GOSS_CACHE"
     fi
