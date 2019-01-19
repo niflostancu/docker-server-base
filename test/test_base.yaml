@@ -3,10 +3,10 @@ process:
     running: true
 
 command:
-  orbit version:
+  gomplate --version:
     exit-status: 0
     stdout:
-     - "/^v?[0-9.-]+-alpine$/"
+     - "/version ?[0-9.-]+/"
 
 user:
   container:
