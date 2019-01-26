@@ -1,5 +1,4 @@
 FROM alpine:3.8
-MAINTAINER Florin Stancu <niflostancu@gmail.com>
 
 # package versions (prefixes) and arch
 ARG S6L_VERSION="v1."

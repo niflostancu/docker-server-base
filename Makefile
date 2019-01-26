@@ -2,8 +2,10 @@
 
 IMAGE_NAME = server-base
 IMAGE_TAGS ?= 0.2
-IMAGE_PREFIX ?= nicloud/
+IMAGE_PREFIX ?= niflostancu/
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
+
+-include local.mk
 
 build:
 	docker build $(BUILD_ARGS) -t $(FULL_IMAGE_NAME) -f Dockerfile .
