@@ -37,5 +37,5 @@ RUN \
 COPY etc /etc
 COPY bin /bin
 
-ENTRYPOINT [ "/init" ]
+ENTRYPOINT [ "/bin/entrypoint-cmd" ]
 

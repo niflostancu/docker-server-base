@@ -1,0 +1,11 @@
+#!/usr/bin/execlineb -P
+
+with-contenv
+# parse the netstring and replace all $CMD occurences
+importas -d "" CMD CMD_RAW
+
+redirfd -w 1 "/var/run/test-cmd"
+forx ARG { $CMD }
+importas ARG ARG
+echo "$ARG"
+

@@ -1,0 +1,12 @@
+#!/bin/execlineb
+# Entrypoint that exposes the docker run CMD.
+
+# encode the args as a netstring
+backtick CMD_RAW { dollarat -d "" }
+
+elgetpositionals
+emptyenv -P
+
+# exec into the original entrypoint
+/init $@
+
