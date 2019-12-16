@@ -1,7 +1,7 @@
 # Docker image Makefile
 
 IMAGE_NAME = server-base
-IMAGE_TAGS ?= 0.2
+IMAGE_TAGS ?= v0.3
 IMAGE_PREFIX ?= niflostancu/
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 

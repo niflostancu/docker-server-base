@@ -2,17 +2,3 @@ process:
   s6-svscan:
     running: true
 
-command:
-  gomplate --version:
-    exit-status: 0
-    stdout:
-     - "/version ?[0-9.-]+/"
-
-user:
-  container:
-    exists: true
-    uid: 1001
-    gid: 1002
-    groups:
-     - users
-
