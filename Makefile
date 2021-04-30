@@ -1,7 +1,7 @@
 # Docker image Makefile
 
 IMAGE_NAME = server-base
-IMAGE_TAGS ?= v0.3
+IMAGE_TAGS ?= v0.4-alpine3.13
 IMAGE_PREFIX ?= niflostancu/
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 
@@ -9,7 +9,7 @@ FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 
 build:
 	docker build $(BUILD_ARGS) -t $(FULL_IMAGE_NAME) -f Dockerfile .
-	$(foreach TAG,$(IMAGE_TAGS),docker tag $(FULL_IMAGE_NAME) $(FULL_IMAGE_NAME):$(TAG);)
+	$(foreach TAG,$(IMAGE_TAGS),docker tag $(FULL_IMAGE_NAME) $(FULL_IMAGE_NAME):$(TAG) ;)
 
 build_force: BUILD_ARGS+= --pull --no-cache
 build_force: build

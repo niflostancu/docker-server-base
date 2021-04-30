@@ -1,7 +1,7 @@
-FROM alpine:3
+FROM alpine:3.13
 
 # package versions (prefixes) and arch
-ARG S6L_VERSION="v1."
+ARG S6L_VERSION="v2."
 ARG ARCH="amd64"
 
 # environment variables
