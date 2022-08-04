@@ -1,7 +1,7 @@
 # Docker image Makefile
 
 IMAGE_NAME = server-base
-IMAGE_TAGS ?= alpine3 alpine-3.14
+IMAGE_TAGS ?= alpine3 alpine-3.16
 IMAGE_PREFIX ?= niflostancu/
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 
