@@ -1,7 +1,7 @@
 # Docker image Makefile
 
 IMAGE_NAME = server-base
-IMAGE_TAGS ?= alpine3 alpine-3.16
+IMAGE_TAGS ?= alpine3 alpine-3.18
 IMAGE_PREFIX ?= niflostancu/
 FULL_IMAGE_NAME=$(IMAGE_PREFIX)$(IMAGE_NAME)
 BUILD_ARGS=--platform linux/amd64,linux/arm64,linux/arm/v7

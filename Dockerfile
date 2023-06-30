@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.18
 
 # package versions (prefixes) and arch
 ARG S6L_VERSION="v2."
