@@ -2,7 +2,7 @@ FROM alpine:3.16
 
 # package versions (prefixes) and arch
 ARG S6L_VERSION="v2."
-ARG ARCH="amd64"
+ARG TARGETPLATFORM
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
