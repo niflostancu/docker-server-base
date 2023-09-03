@@ -1,33 +1,32 @@
-FROM alpine:3.18
+ARG ALPINE_VERSION
+FROM alpine:${ALPINE_VERSION}
 
-# package versions (prefixes) and arch
-ARG S6L_VERSION="v2."
+# package versions and arch
+ARG S6L_VERSION="v2.???"
 ARG TARGETPLATFORM
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
-	HOME="/root" TERM="xterm" SHELL="/bin/shell" \
-	S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+	HOME="/root" TERM="xterm" SHELL="/usr/local/bin/run-shell" \
+	S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    PATH="/command:/usr/local/bin:$PATH" \
+	CONT_USER="container" CONT_UID="911" CONT_GID="911"
 
-ADD install_s6overlay.sh /tmp/
+ADD --chmod=755 install_s6_overlay.sh /tmp/
 
 RUN \
 	echo "**** installing packages ****" && \
 	apk --update upgrade && \
 	apk add --no-cache \
-		bash coreutils iproute2 shadow tzdata curl ca-certificates tar && \
-	apk add --no-cache --virtual .build-dependencies \
-		jq && \
+		bash coreutils iproute2 shadow tzdata curl ca-certificates tar xz && \
 	echo "**** adding s6 overlay ****" && \
-	/tmp/install_s6overlay.sh "${S6L_VERSION}" && \
+	/tmp/install_s6_overlay.sh "${S6L_VERSION}" && \
 	echo "**** cleanup ****" && \
-	apk del .build-dependencies && \
-	cat /tmp/VERSIONS 1>&2 && \
 	rm -rf /tmp/*
 
 # add local files
 COPY etc /etc
-COPY bin /bin
+COPY bin /usr/local/bin
 
-ENTRYPOINT [ "/bin/entrypoint-cmd" ]
+ENTRYPOINT [ "/usr/local/bin/entrypoint-cmd" ]
 
