@@ -1,0 +1,12 @@
+user:
+  testuser:
+    exists: true
+    uid: 2023
+  container:
+    exists: false
+
+group:
+  testuser:
+    exists: true
+    gid: 2023
+

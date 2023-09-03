@@ -1,10 +1,10 @@
 #!/bin/bash
 # Base image tests
 
-TESTS=(base services cmd)
+TESTS=(base services cmd create_user modify_user)
 
 if [[ -n "$DUMMY_TESTS" ]]; then
-    TESTS=(base services dummy fail)
+    TESTS+=(dummy fail)
 fi
 
 # declare the image to be tested
@@ -50,6 +50,25 @@ function test_cmd() {
     dtest_exec wait-for-boot
     dtest_goss "test_cmd.yaml"
 }
+
+function test_create_user_before() {
+    DOCKER_ARGS=(-e "CONT_USER=testuser" -e "CONT_UID=2023")
+    TEST_IMAGE=$BASE_IMAGE
+}
+function test_create_user() {
+    dtest_exec wait-for-boot
+    dtest_goss "test_user.yaml"
+}
+
+function test_modify_user_before() {
+    DOCKER_ARGS=(-e "CONT_USER=testuser" -e "CONT_UID=2023")
+    TEST_IMAGE=$TEST_IMAGE_BUILD
+}
+function test_modify_user() {
+    dtest_exec wait-for-boot
+    dtest_goss "test_user.yaml"
+}
+
 
 function test_dummy() {
     dtest_exec true

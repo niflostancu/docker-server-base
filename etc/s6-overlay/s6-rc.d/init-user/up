@@ -4,7 +4,10 @@ with-contenv
 # import CONT_* env variables
 importas -D "container" CONT_USER CONT_USER
 importas -D 911 CONT_UID CONT_UID
-importas -D 911 CONT_GID CONT_GID
+# if CONT_GID not defined or empty, default to CONT_UID
+backtick -n -D "${CONT_UID}" -E CONT_GID
+    { importas -D "" CONT_GID CONT_GID
+      if { eltest -n "${CONT_GID}" } s6-echo ${CONT_GID} }
 
 # check if the user exists
 ifelse { redirfd -w 2 /dev/null id $CONT_USER }
@@ -23,11 +26,19 @@ ifelse { redirfd -w 2 /dev/null id $CONT_USER }
         if { test ${ACTUAL_UID} -ne ${CONT_UID} }
         usermod -o -u "${CONT_UID}" ${CONT_USER}
     }
-
-    foreground {
-        s6-echo "init-user: '${CONT_USER}' created, uid=${CONT_UID}, gid=${CONT_GID}"
-    }
+    s6-echo "init-user: '${CONT_USER}' modified, new uid=${CONT_UID}, gid=${CONT_GID}"
 }
+
 # else: create the user
-useradd -r -u  $CONT_UID $CONT_USER
+backtick -n -D "-m" CONT_USER_ADD_ARGS
+{ if { eltest "${CONT_UID}" -lt 1000 } s6-echo -- "-r" }
+backtick -n -D "" CONT_GROUP_ADD_ARGS
+{ if -t { eltest "${CONT_GID}" -lt 1000 } s6-echo -- "-r" }
+
+importas -uis CONT_GROUP_ADD_ARGS CONT_GROUP_ADD_ARGS
+importas -uis CONT_USER_ADD_ARGS CONT_USER_ADD_ARGS
+
+if { groupadd $CONT_GROUP_ADD_ARGS -g $CONT_GID $CONT_USER }
+if { useradd $CONT_USER_ADD_ARGS -u $CONT_UID -g $CONT_GID $CONT_USER }
+s6-echo "init-user: '${CONT_USER}' added, uid=${CONT_UID}, gid=${CONT_GID}"
 

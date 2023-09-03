@@ -10,8 +10,8 @@ ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
 	HOME="/root" TERM="xterm" SHELL="/usr/local/bin/run-shell" \
 	S6_CMD_WAIT_FOR_SERVICES_MAXTIME=30000 \
 	S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-    PATH="/command:/usr/local/bin:$PATH" \
-	CONT_USER="container" CONT_UID="911" CONT_GID="911"
+	PATH="/command:/usr/local/bin:$PATH" \
+	CONT_USER="container" CONT_UID="911" CONT_GID=
 
 ADD --chmod=755 install_s6_overlay.sh /tmp/
 
