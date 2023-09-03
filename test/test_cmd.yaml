@@ -1,7 +1,7 @@
 file:
   "/var/run/test-cmd":
     exists: true
-    contains: ["sleep", "123"]
+    contents: ["sleep", "123"]
 
 process:
   sleep:

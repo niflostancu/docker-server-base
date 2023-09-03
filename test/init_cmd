@@ -1,4 +1,4 @@
-#!/usr/bin/execlineb -P
+#!/command/execlineb -P
 
 with-contenv
 # parse the netstring and replace all $CMD occurences

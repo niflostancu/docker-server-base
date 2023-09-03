@@ -1,3 +1,0 @@
-#!/bin/execlineb -P
-touch /var/run/THIS_SHOULD_NOT_EXIST
-

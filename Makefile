@@ -45,7 +45,7 @@ run:
 
 test:
 	@echo "Testing $(_full_image_name)"
-	@TEST_IMAGE="$(_full_image_name):$(firstword $(IMAGE_TAGS))" ./test/run_tests.sh
+	@BASE_IMAGE="$(_full_image_name):$(firstword $(IMAGE_TAGS))" ./test/run_tests.sh
 
 .PHONY: build build_force push test
 

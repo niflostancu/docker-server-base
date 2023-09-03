@@ -1,0 +1,8 @@
+#!/command/execlineb -P
+# Legacy service's executable
+if { touch /run/.LEGACY_SVC_STARTED }
+
+loopwhilex -o 0
+if { s6-echo Hello from legacy service! }
+s6-sleep 86400
+

@@ -8,7 +8,9 @@ if [[ -n "$DUMMY_TESTS" ]]; then
 fi
 
 # declare the image to be tested
-TEST_IMAGE=${TEST_IMAGE:-niflostancu/server-base}
+BASE_IMAGE=${BASE_IMAGE:-niflostancu/server-base:latest}
+TEST_IMAGE_BUILD=${TEST_IMAGE:-niflostancu/server-base-test:latest}
+TEST_IMAGE=${BASE_IMAGE}
 
 SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
@@ -17,18 +19,22 @@ function test_base_before() {
 }
 function test_base() {
     # base image testing
-    dtest_exec wait-for-services
+    dtest_exec wait-for-boot
     dtest_goss "test_base.yaml"
 }
 
 function test_services_before() {
-    # add a sample services as readonly volumes
-    DOCKER_ARGS+=(-v "$SDIR/service-sampled:/etc/services.d/sampled:ro")
-    DOCKER_ARGS+=(-v "$SDIR/service-down:/etc/services.d/downd:ro")
-    DOCKER_ARGS+=(-e "S6_READ_ONLY_ROOT=1")
+    (
+        cd "$SDIR"
+        pwd
+        DTEST_BUILD_ARGS=(--pull=false  --load --build-arg "SERVER_BASE=$BASE_IMAGE" -t "$TEST_IMAGE_BUILD" .)
+        _debug docker buildx  b "${DTEST_BUILD_ARGS[@]}"
+        docker buildx --builder default b "${DTEST_BUILD_ARGS[@]}"
+    )
+    TEST_IMAGE=$TEST_IMAGE_BUILD
 }
 function test_services() {
-    dtest_exec wait-for-services
+    dtest_exec wait-for-boot
     dtest_goss "test_services.yaml"
 }
 
@@ -41,7 +47,7 @@ function test_cmd_before() {
     DOCKER_ARGS+=(-v "$TEST_TMP/init_cmd:/etc/cont-init.d/20-cmd")
 }
 function test_cmd() {
-    dtest_exec wait-for-services
+    dtest_exec wait-for-boot
     dtest_goss "test_cmd.yaml"
 }
 

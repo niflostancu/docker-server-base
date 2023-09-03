@@ -1,6 +1,7 @@
 #!/bin/bash
 # Goss-based Docker image testing library, inspired by dgoss (but enhanced).
-# Version 0.1
+# Version 0.2
+set -e
 
 # All begins with the `run_tests` function: it takes the global $TESTS
 # array (which contains the name of the test functions to run), setting up the
@@ -13,7 +14,8 @@
 
 # Goss binary path or download URL (empty - autodetect, use URL as last resort)
 GOSS_PATH=${GOSS_PATH:-}
-GOSS_URL=https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64
+GOSS_ARCH=amd64
+GOSS_URL=https://github.com/aelsabbahy/goss/releases/download/v0.4.0/goss-linux-${GOSS_ARCH}
 GOSS_CACHE=/tmp/goss.cached
 
 # Colors
@@ -24,7 +26,7 @@ COLOR_error="\033[0;31m"
 
 GOSS_OPTS=(--color --format documentation)
 
-[[ ! -z "$DEBUG" ]] && DEBUG="echo "
+[[ -n "$DEBUG" ]] || DEBUG=0
 
 _SDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 
