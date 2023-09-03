@@ -1,5 +1,5 @@
-#!/bin/execlineb
-# Entrypoint that exposes the docker run CMD.
+#!/command/execlineb
+# Extended entrypoint that exposes the original container CMD as env var.
 
 # encode the args as a netstring
 backtick CMD_RAW { dollarat -d "" }

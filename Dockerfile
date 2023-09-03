@@ -28,5 +28,5 @@ RUN \
 COPY etc /etc
 COPY bin /usr/local/bin
 
-ENTRYPOINT [ "/usr/local/bin/entrypoint-cmd" ]
+ENTRYPOINT ["/usr/local/bin/ext-entry"]
 

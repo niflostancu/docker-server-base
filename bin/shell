@@ -1,4 +1,0 @@
-#!/usr/bin/execlineb -S0
-with-contenv
-bash $@
-

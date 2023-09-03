@@ -1,0 +1,5 @@
+#!/command/execlineb -S0
+# Runs the bash shell with container environment
+with-contenv
+bash $@
+
