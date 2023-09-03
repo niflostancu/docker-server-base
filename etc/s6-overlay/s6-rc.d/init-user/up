@@ -1,0 +1,33 @@
+# Creates/alters the main container user using custom UID/GID from the environment.
+with-contenv
+
+# import CONT_* env variables
+importas -D "container" CONT_USER CONT_USER
+importas -D 911 CONT_UID CONT_UID
+importas -D 911 CONT_GID CONT_GID
+
+# check if the user exists
+ifelse { redirfd -w 2 /dev/null id $CONT_USER }
+{
+    backtick -D 0 -n ACTUAL_GID { id -g $CONT_USER }
+    importas -u ACTUAL_GID ACTUAL_GID
+
+    foreground {
+        if { test ${ACTUAL_GID} -ne ${CONT_GID} }
+        groupmod -o -g "${CONT_GID}" ${CONT_USER}
+    }
+
+    backtick -D 0 -n ACTUAL_UID { id -u ${CONT_USER} }
+    importas -u ACTUAL_UID ACTUAL_UID
+    foreground {
+        if { test ${ACTUAL_UID} -ne ${CONT_UID} }
+        usermod -o -u "${CONT_UID}" ${CONT_USER}
+    }
+
+    foreground {
+        s6-echo "init-user: '${CONT_USER}' created, uid=${CONT_UID}, gid=${CONT_GID}"
+    }
+}
+# else: create the user
+useradd -r -u  $CONT_UID $CONT_USER
+

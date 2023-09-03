@@ -2,12 +2,13 @@ ARG ALPINE_VERSION
 FROM alpine:${ALPINE_VERSION}
 
 # package versions and arch
-ARG S6L_VERSION="v2.???"
+ARG S6L_VERSION="v3.???"
 ARG TARGETPLATFORM
 
 # environment variables
 ENV PS1="$(whoami)@$(hostname):$(pwd)$ " \
 	HOME="/root" TERM="xterm" SHELL="/usr/local/bin/run-shell" \
+	S6_CMD_WAIT_FOR_SERVICES_MAXTIME=30000 \
 	S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     PATH="/command:/usr/local/bin:$PATH" \
 	CONT_USER="container" CONT_UID="911" CONT_GID="911"

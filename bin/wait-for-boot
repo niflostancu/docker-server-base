@@ -1,0 +1,20 @@
+#!/command/execlineb -S0
+# waits until all container services have been started
+
+importas -D 30000 -u CONT_WAIT_INIT_MAX CONT_WAIT_INIT_MAX
+
+importas -D "/run/.cont-boot-finished" CONT_INIT_FINISHED_EMPTY CONT_INIT_FINISHED_EMPTY
+importas -D "/run/.cont-boot-wait" CONT_INIT_FINISHED_FIFO CONT_INIT_FINISHED_FIFO
+
+# subscribe to the event, but use an extra file to avoid the chicken-egg
+# problem
+foreground { s6-mkfifodir "${CONT_INIT_FINISHED_FIFO}" }
+
+if {
+    redirfd -w 1 /dev/null
+    s6-ftrig-listen1 -t "${CONT_WAIT_INIT_MAX}" "${CONT_INIT_FINISHED_FIFO}" x
+    # now, if the INIT_FINISHED file exists, do a self-notify to readily return
+    # from the listening procedure
+    if -t { eltest -f "${CONT_INIT_FINISHED_EMPTY}" }
+    s6-ftrig-notify "${CONT_INIT_FINISHED_FIFO}" x
+}

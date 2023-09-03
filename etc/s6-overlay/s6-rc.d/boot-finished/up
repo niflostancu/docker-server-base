@@ -1,0 +1,16 @@
+# script used to notify others that the container's boot sequence has finished
+with-contenv
+
+importas -D "/run/.cont-boot-finished" CONT_INIT_FINISHED_EMPTY CONT_INIT_FINISHED_EMPTY
+importas -D "/run/.cont-boot-wait" CONT_INIT_FINISHED_FIFO CONT_INIT_FINISHED_FIFO
+
+# solve the chicken-egg problem by creating an empty file to be checked first
+# by the subscriber
+if { touch ${CONT_INIT_FINISHED_EMPTY} }
+
+# if the subscriber is already waiting, send a notification event
+foreground { s6-mkfifodir "${CONT_INIT_FINISHED_FIFO}" }
+foreground { s6-ftrig-notify "${CONT_INIT_FINISHED_FIFO}" x }
+
+s6-echo "boot-finished: container startup finished!"
+

@@ -1,7 +1,7 @@
 # Docker image Makefile
 
 ALPINE_VERSION=3.18
-S6L_VER_PREFIX = v2
+S6L_VER_PREFIX = v3
 S6L_VERSION ?= $(get-s6l-version)
 
 V ?=

@@ -1,0 +1,10 @@
+# Automatically configures the timezone if the TZ variable is set
+with-contenv
+
+importas -D "" TZ TZ
+if -t { eltest -n "${TZ}" }
+
+if { ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime }
+
+redirfd -w 1 /etc/timezone s6-echo "${TZ}"
+
