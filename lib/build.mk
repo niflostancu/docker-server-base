@@ -37,6 +37,7 @@ V ?=
 -docker-build-args = $$(DOCKER_BUILD_ARGS) \
 			$(if $(ALL),--platform $(-docker-build-platforms)) \
 			$(if $(V),--progress=plain) \
+			$(if $(FORCE),--pull --no-cache) \
 			$(if $(PUSH),--push,$(if $(LOAD),--load)) \
 			$(-docker-build-tag-full) $(-docker-build-extra-args) \
 			-f $(-docker-src-file) "$(-docker-src-dir)"
