@@ -5,7 +5,7 @@ BASE_DIR ?= .
 include $(BASE_DIR)/lib/build.mk
 
 # image variables
-ALPINE_VERSION=3.18
+ALPINE_VERSION=3.20
 S6L_VER_PREFIX = v3
 S6L_URL=https://github.com/just-containers/s6-overlay/\#prefix=$(S6L_VER_PREFIX).
 S6L_VERSION ?= $(get-s6l-version)
